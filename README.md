@@ -22,7 +22,7 @@ Each page is a single self-contained HTML file (no build step, no dependencies),
 - Data is saved in the browser (localStorage), so it stays on the device and browser you used. Use one device per page on shop day, since devices don't sync with each other.
 ## Making edits
 
-To make any edits, just dump the code from here into Claude with the desired modifications and it'll work its magic! Upon final completion, ask Claude to generate an artifact and publish the link so that anyone can access it.
+To make any edits, just dump the code from here into Claude chat with the desired modifications (in english) and it'll work its magic! Upon final completion, ask Claude to generate an artifact and publish the link so that anyone can access it.
 
 Things you'll most likely want to change, all near the top of the script in each file:
 
