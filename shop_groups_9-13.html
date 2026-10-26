@@ -99,7 +99,7 @@ td input[type=number]{width:80px}
   <section class="panel">
     <div class="phead"><div><h2>Stock and budget</h2><p class="sub">Set what the shop holds before it opens. Sold and remaining update as crews buy.</p></div></div>
     <div class="settings">
-      <label class="f" for="budget">Starting Coins per crew<input type="number" id="budget" min="0" step="1"></label>
+      <label class="f" for="budget">Starting Coins per crew<input type="number" id="budget" min="0" max="50" step="1"></label>
       <button class="reset" id="reset" type="button">Reset all purchases</button>
     </div>
     <div class="scroll"><table>
@@ -132,12 +132,12 @@ var ITEMS=[
 var NAMES=['Elizabeth Swann','Anne Bonny','Mary Read','Calypso','Jack the Monkey'];
 var OFF=8;var KEY='pirate-shop-g9';
 function fresh(){
-  var s={budget:100,sel:0,buys:NAMES.map(function(){return {}}),stock:{}};
+  var s={budget:50,sel:0,buys:NAMES.map(function(){return {}}),stock:{}};
   ITEMS.forEach(function(i){s.stock[i[0]]=i[3]*NAMES.length});
   return s;
 }
 var S=fresh();
-try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.buys&&p.buys.length===NAMES.length){S=p;ITEMS.forEach(function(i){if(S.stock[i[0]]==null)S.stock[i[0]]=i[3]*NAMES.length})}}}catch(e){}
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.buys&&p.buys.length===NAMES.length){S=p;S.budget=Math.min(50,S.budget);ITEMS.forEach(function(i){if(S.stock[i[0]]==null)S.stock[i[0]]=i[3]*NAMES.length})}}}catch(e){}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function $(id){return document.getElementById(id)}
 function spent(t){var n=0;ITEMS.forEach(function(i){n+=(S.buys[t][i[0]]||0)*i[2]});return n}
@@ -194,7 +194,7 @@ document.addEventListener('click',function(e){
 });
 document.addEventListener('change',function(e){
   var el=e.target;
-  if(el.id==='budget'){S.budget=Math.max(0,Math.floor(+el.value)||0)}
+  if(el.id==='budget'){S.budget=Math.min(50,Math.max(0,Math.floor(+el.value)||0))}
   else if(el.dataset.s){S.stock[el.dataset.s]=Math.max(0,Math.floor(+el.value)||0)}
   else return;
   save();render();
