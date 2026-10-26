@@ -1,0 +1,203 @@
+<title>Pirate Shop Groups 9-13</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pirata+One&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: crew picker on top, active crew's shop below, stock ledger last. Sea-ink palette with a brass coin accent. */
+:root{
+  --bg:#eef3f1; --surface:#ffffff; --fg:#12262b; --muted:#566b70; --line:#cfdad8;
+  --accent:#a36f0c; --accent-fg:#ffffff; --sea:#1d5a66; --ok:#2f7d4f; --bad:#b3402f; --chip:#e1ebe8;
+  --display:'Pirata One','Georgia',serif; --body:'IBM Plex Sans',system-ui,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0c1b20; --surface:#132a31; --fg:#e5efec; --muted:#8fa7ab; --line:#25444c;
+  --accent:#e3b341; --accent-fg:#1a1405; --sea:#6fc0cd; --ok:#6fcf97; --bad:#f08a78; --chip:#1a3740; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0c1b20; --surface:#132a31; --fg:#e5efec; --muted:#8fa7ab; --line:#25444c;
+  --accent:#e3b341; --accent-fg:#1a1405; --sea:#6fc0cd; --ok:#6fcf97; --bad:#f08a78; --chip:#1a3740; color-scheme:dark}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45;
+  padding-block:24px 48px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:28px}
+h1,h2{font-family:var(--display);font-weight:400;margin:0;text-wrap:balance}
+h1{font-size:clamp(34px,6vw,52px);line-height:1}
+h2{font-size:28px}
+.sub{color:var(--muted);margin:6px 0 0}
+.coin{display:inline-block;width:.95em;height:.95em;border-radius:50%;background:var(--accent);vertical-align:-.1em;margin-right:.3em;box-shadow:inset 0 0 0 .14em color-mix(in srgb,var(--accent-fg) 25%,transparent)}
+.crews{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.crew{all:unset;box-sizing:border-box;cursor:pointer;background:var(--surface);border:1px solid var(--line);border-radius:6px;padding:8px 10px;display:flex;flex-direction:column;gap:2px;min-width:0}
+.crew:focus-visible,.btn:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.crew .n{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.crew .nm{font-weight:600;overflow-wrap:anywhere}
+.crew .bal{font-size:13px;color:var(--muted);font-variant-numeric:tabular-nums}
+.crew[aria-pressed="true"]{background:var(--sea);border-color:var(--sea);color:var(--bg)}
+.crew[aria-pressed="true"] .n,.crew[aria-pressed="true"] .bal{color:inherit;opacity:.85}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.phead{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:flex-end;padding:18px 20px;border-bottom:1px solid var(--line)}
+.bank{display:flex;gap:24px;font-variant-numeric:tabular-nums}
+.bank div{display:flex;flex-direction:column}
+.bank .k{font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.bank .v{font-family:var(--display);font-size:32px;line-height:1.1}
+.scroll{overflow-x:auto}
+table{border-collapse:collapse;width:100%;min-width:560px}
+th{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:600;padding:10px 20px;border-bottom:1px solid var(--line)}
+td{padding:10px 20px;border-bottom:1px solid var(--line);vertical-align:middle;font-variant-numeric:tabular-nums}
+tr:last-child td{border-bottom:0}
+th.r,td.r{text-align:right}
+.sub2{display:block;font-size:12px;color:var(--muted)}
+.step{display:inline-flex;align-items:center;gap:8px}
+.btn{all:unset;box-sizing:border-box;cursor:pointer;width:34px;height:34px;display:inline-grid;place-items:center;border-radius:6px;border:1px solid var(--line);font-weight:600;font-size:18px;background:var(--chip)}
+.btn.add{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.q{min-width:3.2ch;text-align:center;font-weight:600}
+.pill{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--chip)}
+.pill.bad{color:var(--bad)} .pill.ok{color:var(--ok)}
+.settings{display:flex;flex-wrap:wrap;gap:16px 28px;padding:16px 20px;border-bottom:1px solid var(--line);align-items:end}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+input[type=number]{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;width:90px;font-variant-numeric:tabular-nums}
+td input[type=number]{width:80px}
+.reset{all:unset;cursor:pointer;color:var(--bad);font-weight:600;padding:6px 0}
+.reset:focus-visible{outline:2px solid var(--bad);outline-offset:2px}
+.note{color:var(--muted);font-size:13px;margin:0}
+.ledger{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr))}
+.lg{padding:14px 20px;border-bottom:1px solid var(--line);border-right:1px solid var(--line);min-width:0}
+.lg h3{margin:0 0 6px;font-size:15px;display:flex;justify-content:space-between;gap:8px}
+.lg h3 span{font-weight:400;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.lg ul{margin:0;padding:0;list-style:none;font-size:14px;font-variant-numeric:tabular-nums}
+.lg li{display:flex;justify-content:space-between;gap:8px}
+.lg li b{font-weight:500;color:var(--muted)}
+.lg .none{color:var(--muted);font-size:14px}
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Pirate Shop: Groups 9-13</h1>
+    <p class="sub">No returns or exchanges. Limited supply: when the shop runs out, it runs out.</p>
+  </header>
+
+  <section aria-label="Crews">
+    <div class="crews" id="crews"></div>
+  </section>
+
+  <section class="panel" aria-live="polite">
+    <div class="phead">
+      <div><h2 id="crewName"></h2><p class="sub" id="crewSub"></p></div>
+      <div class="bank">
+        <div><span class="k">Coins left</span><span class="v" id="bLeft"></span></div>
+        <div><span class="k">Spent</span><span class="v" id="bSpent"></span></div>
+      </div>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th>Item</th><th class="r">Price</th><th class="r">Max</th><th class="r">Shop stock</th><th class="r">Bought</th></tr></thead>
+      <tbody id="shop"></tbody>
+    </table></div>
+  </section>
+
+  <section class="panel">
+    <div class="phead"><div><h2>Purchases by group</h2><p class="sub">Everything each group has bought so far.</p></div></div>
+    <div class="ledger" id="ledger"></div>
+  </section>
+
+  <section class="panel">
+    <div class="phead"><div><h2>Stock and budget</h2><p class="sub">Set what the shop holds before it opens. Sold and remaining update as crews buy.</p></div></div>
+    <div class="settings">
+      <label class="f" for="budget">Starting Coins per crew<input type="number" id="budget" min="0" step="1"></label>
+      <button class="reset" id="reset" type="button">Reset all purchases</button>
+    </div>
+    <div class="scroll"><table>
+      <thead><tr><th>Item</th><th class="r">Stock</th><th class="r">Sold</th><th class="r">Remaining</th></tr></thead>
+      <tbody id="stock"></tbody>
+    </table></div>
+  </section>
+  <p class="note">Purchases are final in play. The minus button is only for fixing a volunteer's entry mistake.</p>
+</div>
+
+<script>
+var ITEMS=[
+ ['pop','Popsicle Stick',1,8,''],
+ ['tape','Masking Tape (12 inches)',3,3,'36 inches total'],
+ ['zip','ZipTie',3,2,''],
+ ['pipe','Pipecleaner',1,4,''],
+ ['note','Notecard',5,2,''],
+ ['dowel','Wooden Dowel',2,3,''],
+ ['foil','Aluminum Foil (6 x 6 in)',4,2,''],
+ ['ori','Origami Paper',4,2,''],
+ ['rub','Rubber Band',1,5,''],
+ ['bind','Binder Clip',5,1,''],
+ ['straw','Straw',1,3,''],
+ ['cap','Bottlecap',2,6,''],
+ ['wheel','Mindstorm wheel',4,2,''],
+ ['btn','Buttons (2)',1,3,'6 total'],
+ ['twine','Twine (6 inches)',3,2,'12 inches total'],
+ ['clip','Paperclips (2)',1,3,'6 total']
+];
+var NAMES=['Elizabeth Swann','Anne Bonny','Mary Read','Calypso','Jack the Monkey'];
+var OFF=8;var KEY='pirate-shop-g9';
+function fresh(){
+  var s={budget:100,sel:0,buys:NAMES.map(function(){return {}}),stock:{}};
+  ITEMS.forEach(function(i){s.stock[i[0]]=i[3]*NAMES.length});
+  return s;
+}
+var S=fresh();
+try{var raw=localStorage.getItem(KEY);if(raw){var p=JSON.parse(raw);if(p&&p.buys&&p.buys.length===NAMES.length){S=p;ITEMS.forEach(function(i){if(S.stock[i[0]]==null)S.stock[i[0]]=i[3]*NAMES.length})}}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function $(id){return document.getElementById(id)}
+function spent(t){var n=0;ITEMS.forEach(function(i){n+=(S.buys[t][i[0]]||0)*i[2]});return n}
+function sold(id){var n=0;S.buys.forEach(function(b){n+=b[id]||0});return n}
+function left(t){return S.budget-spent(t)}
+function C(n){return '<span class="coin"></span>'+n}
+function render(){
+  var t=S.sel;
+  $('crews').innerHTML=NAMES.map(function(n,k){
+    return '<button class="crew" data-t="'+k+'" aria-pressed="'+(k===t)+'"><span class="n">Group '+(k+OFF+1)+'</span><span class="nm">'+n+'</span><span class="bal">'+C(left(k))+' left</span></button>';
+  }).join('');
+  $('crewName').textContent='Group '+(t+OFF+1)+': '+NAMES[t];
+  $('crewSub').textContent='Starting purse: '+S.budget+' Coins';
+  $('bLeft').innerHTML=C(left(t));
+  $('bSpent').innerHTML=C(spent(t));
+  $('shop').innerHTML=ITEMS.map(function(i){
+    var id=i[0],q=S.buys[t][id]||0,rem=S.stock[id]-sold(id);
+    var canAdd=q<i[3]&&left(t)>=i[2]&&rem>0;
+    var why=q>=i[3]?'At max':rem<=0?'Sold out':left(t)<i[2]?'Not enough Coins':'';
+    return '<tr><td>'+i[1]+(i[4]?'<span class="sub2">Max '+i[4]+'</span>':'')+'</td>'
+      +'<td class="r">'+C(i[2])+(i[2]===1?'':'')+'</td>'
+      +'<td class="r">'+i[3]+'</td>'
+      +'<td class="r">'+(rem<=0?'<span class="pill bad">Sold out</span>':rem)+'</td>'
+      +'<td class="r"><span class="step"><button class="btn" data-a="sub" data-i="'+id+'" aria-label="Remove one '+i[1]+'"'+(q<1?' disabled':'')+'>&minus;</button>'
+      +'<span class="q">'+q+'</span>'
+      +'<button class="btn add" data-a="add" data-i="'+id+'" aria-label="Add one '+i[1]+'"'+(canAdd?'':' disabled')+' title="'+why+'">+</button></span></td></tr>';
+  }).join('');
+  $('stock').innerHTML=ITEMS.map(function(i){
+    var id=i[0],s=sold(id),rem=S.stock[id]-s;
+    return '<tr><td>'+i[1]+'</td><td class="r"><input type="number" min="0" step="1" id="st-'+id+'" data-s="'+id+'" value="'+S.stock[id]+'" aria-label="Stock for '+i[1]+'"></td>'
+      +'<td class="r">'+s+'</td><td class="r">'+(rem<=0?'<span class="pill bad">0</span>':rem<=Math.ceil(S.stock[id]*0.15)?'<span class="pill">'+rem+' low</span>':rem)+'</td></tr>';
+  }).join('');
+  $('budget').value=S.budget;
+  $('ledger').innerHTML=NAMES.map(function(n,k){
+    var rows=ITEMS.filter(function(i){return S.buys[k][i[0]]>0}).map(function(i){
+      var q=S.buys[k][i[0]];return '<li><span>'+q+' &times; '+i[1]+'</span><b>'+(q*i[2])+'</b></li>';
+    }).join('');
+    return '<div class="lg"><h3>'+(k+OFF+1)+'. '+n+'<span>'+C(spent(k))+'</span></h3>'+(rows?'<ul>'+rows+'</ul>':'<div class="none">Nothing bought yet</div>')+'</div>';
+  }).join('');
+}
+document.addEventListener('click',function(e){
+  var b=e.target.closest('button');if(!b)return;
+  if(b.dataset.t!=null){S.sel=+b.dataset.t}
+  else if(b.dataset.a){
+    var id=b.dataset.i,it=ITEMS.filter(function(x){return x[0]===id})[0],bu=S.buys[S.sel],q=bu[id]||0;
+    if(b.dataset.a==='add'){if(q<it[3]&&left(S.sel)>=it[2]&&S.stock[id]-sold(id)>0)bu[id]=q+1}
+    else if(q>0)bu[id]=q-1;
+  }
+  else if(b.id==='reset'){
+    if(!b.dataset.arm){b.dataset.arm='1';b.textContent='Tap again to clear every purchase';return}
+    S.buys=NAMES.map(function(){return {}});
+  } else return;
+  save();render();
+});
+document.addEventListener('change',function(e){
+  var el=e.target;
+  if(el.id==='budget'){S.budget=Math.max(0,Math.floor(+el.value)||0)}
+  else if(el.dataset.s){S.stock[el.dataset.s]=Math.max(0,Math.floor(+el.value)||0)}
+  else return;
+  save();render();
+});
+render();
+</script>
