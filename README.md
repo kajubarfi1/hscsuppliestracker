@@ -19,7 +19,7 @@ Each page is a single self-contained HTML file (no build step, no dependencies),
 - **Stock and budget** is where you set the starting Coins per crew and the stock of each item before the shop opens. Sold and remaining counts update as crews buy.
 - Purchases are final in play. The **−** button is only for fixing a volunteer's entry mistake.
 - **Reset all purchases** clears every crew's purchases (it asks you to tap twice).
-- Data is saved in the browser (localStorage), so it stays on the device and browser you used. Use one device per page on shop day, since devices don't sync with each other.
+- Data is saved in the browser (localStorage), so it stays on the device and browser you used. $\color{red}{\textbf{Use one device per page on shop day, since devices don't sync with each other.}}$
 
 ## Making edits
 
